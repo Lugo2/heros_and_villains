@@ -9,8 +9,11 @@ from .models import Supers
 def supers_list(request):
     
     if request.method == 'GET':
-        supers = Supers.objects.all()
-        serializer = SupersSerializer(supers, many = True)
+        super_type = request.query_params.get('type')
+        queryset = Supers.objects.all()
+        if super_type:
+            queryset = queryset.filter(super_type__name = super_type)
+        serializer = SupersSerializer(queryset, many = True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
